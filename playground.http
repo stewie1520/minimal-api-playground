@@ -1,0 +1,13 @@
+@playground_HostAddress = http://localhost:5007
+
+GET {{playground_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+POST {{playground_HostAddress}}/api/todoitems
+Content-Type: application/json
+
+{
+  "description": "Hieu deptrai"
+}
