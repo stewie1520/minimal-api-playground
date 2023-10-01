@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using playground.Commands.AddTodoItem;
 using playground.Infrastructures;
 
@@ -12,8 +13,9 @@ public class TodoItems : EndpointGroupBase
             .MapPost(AddTodoItem);
     }
 
-    public async Task<Guid> AddTodoItem(ISender sender, AddTodoItemCommand command)
+    public async Task<Ok<Guid>> AddTodoItem(ISender sender, AddTodoItemCommand command)
     {
-        return await sender.Send(command);
+        var created = await sender.Send(command);
+        return TypedResults.Ok(created);
     }
 }

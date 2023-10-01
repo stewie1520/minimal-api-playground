@@ -9,9 +9,9 @@ public static class WebAppExtension
         var groupName = group.GetType().Name;
 
         return app.MapGroup($"api/{groupName}")
-          .WithGroupName(groupName)
-          .WithTags(groupName)
-          .WithOpenApi();
+            .WithGroupName(groupName)
+            .WithTags(groupName)
+            .WithOpenApi();
     }
 
     public static WebApplication MapEndpoints(this WebApplication app)

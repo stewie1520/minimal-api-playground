@@ -1,10 +1,13 @@
+using ValidationException = playground.Common.Exceptions.ValidationException;
+
 namespace playground.Common.Behaviours;
 
 public class ValidationBehaviour<TRequest, TResponse>
-(IEnumerable<IValidator<TRequest>> validators) : IPipelineBehavior<TRequest, TResponse>
-  where TRequest : notnull
+    (IEnumerable<IValidator<TRequest>> validators) : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : notnull
 {
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
         if (validators.Any())
         {
@@ -22,6 +25,7 @@ public class ValidationBehaviour<TRequest, TResponse>
             if (failures.Any())
                 throw new ValidationException(failures);
         }
+
         return await next();
     }
 }

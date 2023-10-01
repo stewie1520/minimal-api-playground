@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using playground.Common.Behaviours;
 using playground.Common.Interfaces;
+using playground.Infrastructures;
 using playground.Infrastructures.Data;
 using playground.Infrastructures.Data.Interceptors;
 
@@ -17,6 +18,8 @@ public static class DependencyInjection
         services.AddHttpContextAccessor();
 
         services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+
+        services.AddExceptionHandler<CustomExceptionHandler>();
 
         return services;
     }

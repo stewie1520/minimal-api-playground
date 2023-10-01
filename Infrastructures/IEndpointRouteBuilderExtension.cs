@@ -1,5 +1,3 @@
-using Ardalis.GuardClauses;
-
 namespace playground.Infrastructures;
 
 public static class IEndpointRouteBuilderExtensions
@@ -17,7 +15,8 @@ public static class IEndpointRouteBuilderExtensions
         string pattern = "")
     {
         builder.MapPost(pattern, handler)
-            .WithName(handler.Method.Name);
+            .WithName(handler.Method.Name)
+            .WithOpenApi();
 
         return builder;
     }
