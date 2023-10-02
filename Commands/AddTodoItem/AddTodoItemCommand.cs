@@ -10,15 +10,8 @@ public class AddTodoItemCommand : IRequest<Guid>
     public DateTimeOffset? DueAt { get; set; }
 }
 
-public class AddTodoItemCommandHandler : IRequestHandler<AddTodoItemCommand, Guid>
+public class AddTodoItemCommandHandler(IApplicationDbContext context) : IRequestHandler<AddTodoItemCommand, Guid>
 {
-    private readonly IApplicationDbContext _context;
-
-    public AddTodoItemCommandHandler(IApplicationDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<Guid> Handle(AddTodoItemCommand request, CancellationToken cancellationToken)
     {
         var entity = new TodoItem
@@ -28,8 +21,8 @@ public class AddTodoItemCommandHandler : IRequestHandler<AddTodoItemCommand, Gui
             DueAt = request.DueAt
         };
 
-        _context.TodoItems.Add(entity);
-        await _context.SaveChangesAsync(cancellationToken);
+        context.TodoItems.Add(entity);
+        await context.SaveChangesAsync(cancellationToken);
 
         return entity.Id;
     }

@@ -31,12 +31,10 @@ app.Run();
 async void EnsureDbConnected()
 {
     var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
-    using (var scope = scopeFactory.CreateScope())
-    {
-        var dbContext = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
-        if (await dbContext.CanConnectAsync())
-            Console.WriteLine("🚀 Database connected!");
-        else
-            Console.WriteLine("⚠️ Database connection failed!");
-    }
+    using var scope = scopeFactory.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
+    if (await dbContext.CanConnectAsync())
+        Console.WriteLine("🚀 Database connected!");
+    else
+        Console.WriteLine("⚠️ Database connection failed!");
 }

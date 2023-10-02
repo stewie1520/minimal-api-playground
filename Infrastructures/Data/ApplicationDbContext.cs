@@ -5,12 +5,9 @@ using playground.Entities;
 
 namespace playground.Infrastructures.Data;
 
-public class ApplicationDbContext : DbContext, IApplicationDbContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options),
+    IApplicationDbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-    {
-    }
-
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
 
     public Task<bool> CanConnectAsync()

@@ -2,14 +2,8 @@ using FluentValidation.Results;
 
 namespace playground.Common.Exceptions;
 
-public class ValidationException : ApplicationException
+public class ValidationException() : ApplicationException("One or more validation failures have occurred.")
 {
-    public ValidationException()
-        : base("One or more validation failures have occurred.")
-    {
-        Errors = new Dictionary<string, string[]>();
-    }
-
     public ValidationException(IEnumerable<ValidationFailure> failures)
         : this()
     {
@@ -18,5 +12,5 @@ public class ValidationException : ApplicationException
             .ToDictionary(failureGroup => failureGroup.Key, failureGroup => failureGroup.ToArray());
     }
 
-    public IDictionary<string, string[]> Errors { get; }
+    public IDictionary<string, string[]> Errors { get; } = new Dictionary<string, string[]>();
 }
