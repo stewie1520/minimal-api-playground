@@ -1,5 +1,6 @@
 ﻿using playground.Common.Interfaces;
 using playground.Entities;
+using playground.Events;
 
 namespace playground.Commands.AddTodoItem;
 
@@ -22,6 +23,9 @@ public class AddTodoItemCommandHandler(IApplicationDbContext context) : IRequest
         };
 
         context.TodoItems.Add(entity);
+
+        entity.AddDomainEvent(new TodoItemCreatedEvent(entity));
+
         await context.SaveChangesAsync(cancellationToken);
 
         return entity.Id;
