@@ -1,3 +1,4 @@
+using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ValidationException = playground.Common.Exceptions.ValidationException;
@@ -12,7 +13,8 @@ public class CustomExceptionHandler : IExceptionHandler
     {
         _exceptionHandlers = new Dictionary<Type, Func<HttpContext, Exception, Task>>
         {
-            { typeof(ValidationException), HandleValidationException }
+            { typeof(ValidationException), HandleValidationException },
+            { typeof(NotFoundException), HandleNotfoundException }
         };
     }
 
@@ -41,6 +43,21 @@ public class CustomExceptionHandler : IExceptionHandler
         {
             Status = StatusCodes.Status400BadRequest,
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
+        });
+    }
+
+    private async Task HandleNotfoundException(HttpContext httpContext, Exception ex)
+    {
+        var exception = (NotFoundException)ex;
+
+        httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+
+        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails
+        {
+            Status = StatusCodes.Status404NotFound,
+            Title = "The specified resource was not found.",
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+            Detail = exception.Message
         });
     }
 }
