@@ -1,10 +1,15 @@
-using playground.Common.Interfaces;
 using playground.Infrastructures;
+using playground.Infrastructures.HealthCheck;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host
+    .UseSerilog((ctx, lc) => lc.ReadFrom.Configuration(ctx.Configuration));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCustomHealthCheck();
 
 // Add services to the container.
 builder.Services.AddWebServices();
@@ -12,7 +17,6 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
-EnsureDbConnected();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -23,18 +27,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseExceptionHandler(options => { });
+app.UseSerilogRequestLogging();
 
-
+app.MapCustomHealthCheck();
 app.MapEndpoints();
-app.Run();
 
-async void EnsureDbConnected()
+try
 {
-    var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
-    using var scope = scopeFactory.CreateScope();
-    var dbContext = scope.ServiceProvider.GetRequiredService<IApplicationDbContext>();
-    if (await dbContext.CanConnectAsync())
-        Console.WriteLine("🚀 Database connected!");
-    else
-        Console.WriteLine("⚠️ Database connection failed!");
+    app.Run();
+}
+catch (Exception ex)
+{
+    app.Logger.LogCritical(ex, "Host terminated unexpectedly...");
+}
+finally
+{
+    Log.CloseAndFlush();
 }

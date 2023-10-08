@@ -10,9 +10,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
 
-    public Task<bool> CanConnectAsync()
+    public Task<bool> CanConnectAsync(CancellationToken token)
     {
-        return Database.CanConnectAsync();
+        return Database.CanConnectAsync(token);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -9,5 +9,5 @@ public interface IApplicationDbContext
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 
-    Task<bool> CanConnectAsync();
+    Task<bool> CanConnectAsync(CancellationToken token);
 }
