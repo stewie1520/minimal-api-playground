@@ -12,7 +12,6 @@ public class DbHealthCheck(IApplicationDbContext dbContext) : IHealthCheck
         if (!dbOk)
             return new HealthCheckResult(
                 context.Registration.FailureStatus, "can't connect to database");
-
         return HealthCheckResult.Healthy();
     }
 }
